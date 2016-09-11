@@ -17,19 +17,22 @@ import java.util.ArrayList;
  */
 public class MoviesAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<String> web;
- //   private final int[] Imageid;
+    private ArrayList<String> moviesposter, overview, date, title, vote;
 
-    public MoviesAdapter(Context c,ArrayList<String> web ) {
+    public MoviesAdapter(Context c,ArrayList<String> moviesposter, ArrayList<String> overview,
+                         ArrayList<String>  date,ArrayList<String> title,ArrayList<String> vote ) {
         mContext = c;
-       // this.Imageid = Imageid;
-        this.web = web;
+        this.moviesposter = moviesposter;
+        this.overview = overview;
+        this.date = date;
+        this.title = title;
+        this.vote = vote;
     }
 
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return web.size();
+        return moviesposter.size();
     }
 
     @Override
@@ -62,7 +65,7 @@ public class MoviesAdapter extends BaseAdapter {
         }
 
         imageView = (ImageView)grid.findViewById(R.id.grid_image);
-        Picasso.with(mContext).load(web.get(position)).placeholder(R.mipmap.ic_launcher).fit().into(imageView);
+        Picasso.with(mContext).load(moviesposter.get(position)).placeholder(R.mipmap.ic_launcher).fit().into(imageView);
 
         return grid;
     }

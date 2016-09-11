@@ -52,7 +52,7 @@ import java.util.Map;
 public class MoviesFragment extends Fragment {
 
     private MoviesAdapter mMoviesAdapter;
-    ArrayList<String> moviesposter;
+    ArrayList<String> moviesposter, overview, date, title, vote;
 
     public MoviesFragment() {
     }
@@ -76,6 +76,7 @@ public class MoviesFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
+            Data();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -88,11 +89,31 @@ public class MoviesFragment extends Fragment {
         // The ArrayAdapter will take data from a source and
         // use it to populate the ListView it's attached to.
         moviesposter = new ArrayList<String>();
-        mMoviesAdapter = new MoviesAdapter(getActivity(), moviesposter);
+        overview = new ArrayList<String>();
+        date = new ArrayList<String>();
+        title = new ArrayList<String>();
+        vote = new ArrayList<String>();
+
+        mMoviesAdapter = new MoviesAdapter(getActivity(), moviesposter, overview, date, title, vote);
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         // Get a reference to the ListView, and attach this adapter to it.
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
         gridview.setAdapter(mMoviesAdapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("EXTRA_IMAGE", moviesposter.get(i));
+                extras.putString("EXTRA_OVERVIEW", overview.get(i));
+                extras.putString("EXTRA_DATE", date.get(i));
+                extras.putString("EXTRA_TITLE", title.get(i));
+                extras.putString("EXTRA_VOTE", vote.get(i));
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }
@@ -122,10 +143,13 @@ public class MoviesFragment extends Fragment {
                                 String syncresponse = object.getString("results");
                                 JSONArray a1obj = new JSONArray(syncresponse);
                                 for (int j = 0; j < a1obj.length(); j++) {
-                                    JSONObject a2obj = a1obj.getJSONObject(j);
-                                    String image = IMAGE_URL+a2obj.getString("poster_path");
-                                    System.out.println(image);
+                                    JSONObject obj = a1obj.getJSONObject(j);
+                                    String image = IMAGE_URL+obj.getString("poster_path");
                                     moviesposter.add(image);
+                                    overview.add(obj.getString("overview"));
+                                    title.add(obj.getString("title"));
+                                    vote.add(obj.getString("vote_average"));
+                                    date.add(obj.getString("release_date"));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
