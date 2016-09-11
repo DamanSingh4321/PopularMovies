@@ -65,7 +65,7 @@ public class MoviesAdapter extends BaseAdapter {
         }
 
         imageView = (ImageView)grid.findViewById(R.id.grid_image);
-        Picasso.with(mContext).load(moviesposter.get(position)).placeholder(R.mipmap.ic_launcher).fit().into(imageView);
+        Picasso.with(mContext).load(moviesposter.get(position)).placeholder(R.drawable.loading).fit().into(imageView);
 
         return grid;
     }

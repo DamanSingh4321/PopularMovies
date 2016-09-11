@@ -52,7 +52,7 @@ import java.util.Map;
 public class MoviesFragment extends Fragment {
 
     private MoviesAdapter mMoviesAdapter;
-    ArrayList<String> moviesposter, overview, date, title, vote;
+    ArrayList<String> moviesposter, overview, date, title, vote, id;
 
     public MoviesFragment() {
     }
@@ -93,6 +93,7 @@ public class MoviesFragment extends Fragment {
         date = new ArrayList<String>();
         title = new ArrayList<String>();
         vote = new ArrayList<String>();
+        id = new ArrayList<String>();
 
         mMoviesAdapter = new MoviesAdapter(getActivity(), moviesposter, overview, date, title, vote);
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
@@ -110,6 +111,7 @@ public class MoviesFragment extends Fragment {
                 extras.putString("EXTRA_DATE", date.get(i));
                 extras.putString("EXTRA_TITLE", title.get(i));
                 extras.putString("EXTRA_VOTE", vote.get(i));
+                extras.putString("EXTRA_ID", id.get(i));
                 intent.putExtras(extras);
                 startActivity(intent);
             }
@@ -130,8 +132,13 @@ public class MoviesFragment extends Fragment {
             final String API_KEY_URL = "api_key=";
             final String API_KEY = "78152e1f5dc1e0ca19063a06ea342fae";
             final String IMAGE_URL = "http://image.tmdb.org/t/p/w500";
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sort = prefs.getString(getString(R.string.pref_sort_key),
+                    getString(R.string.pref_sort_popularity));
+            String order = prefs.getString(getString(R.string.pref_order_key),
+                    getString(R.string.pref_order_asc));
 
-            String url = BASE_URL + API_KEY_URL + API_KEY;
+            String url = BASE_URL + API_KEY_URL + API_KEY + "&sort_by=" + sort + order;
             StringRequest stringRequest = new StringRequest(Request.Method.GET,
                     url,
                     new Response.Listener<String>() {
@@ -150,11 +157,11 @@ public class MoviesFragment extends Fragment {
                                     title.add(obj.getString("title"));
                                     vote.add(obj.getString("vote_average"));
                                     date.add(obj.getString("release_date"));
+                                    id.add(obj.getString("id"));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println(moviesposter.size());
                             mMoviesAdapter.notifyDataSetChanged();
                         }
                     }, new Response.ErrorListener() {
