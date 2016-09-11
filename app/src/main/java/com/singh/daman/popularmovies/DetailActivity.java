@@ -80,7 +80,7 @@ public class DetailActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class DetailFragment extends Fragment {
-
+        String title;
        ArrayList<String> key;
         TextView trailer;
 
@@ -101,7 +101,7 @@ public class DetailActivity extends AppCompatActivity {
             String image = extras.getString("EXTRA_IMAGE");
             String overview = extras.getString("EXTRA_OVERVIEW");
             String date = extras.getString("EXTRA_DATE");
-            String title = extras.getString("EXTRA_TITLE");
+            title = extras.getString("EXTRA_TITLE");
             String vote = extras.getString("EXTRA_VOTE") + "/10";
             final String id = extras.getString("EXTRA_ID");
             Trailer(id);
@@ -139,15 +139,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
 
-          /*  Button btn = (Button) rootView.findViewById(R.id.buttonplay);
-            final String str = key.get(0);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+str)));
-                }
-            });*/
-
             return rootView;
         }
 
@@ -170,8 +161,8 @@ public class DetailActivity extends AppCompatActivity {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
-          //  shareIntent.putExtra(Intent.EXTRA_TEXT,
-            //        mForecastStr + FORECAST_SHARE_HASHTAG);
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                   title + "#PopularMovies");
             return shareIntent;
         }
 
