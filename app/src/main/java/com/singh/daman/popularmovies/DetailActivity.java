@@ -55,19 +55,14 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
@@ -76,12 +71,9 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class DetailFragment extends Fragment {
         String title;
-       ArrayList<String> key;
+        ArrayList<String> key;
         TextView trailer;
 
         public DetailFragment() {
@@ -94,8 +86,6 @@ public class DetailActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-            LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.layout);
-
             Bundle extras = getActivity().getIntent().getExtras();
 
             String image = extras.getString("EXTRA_IMAGE");
@@ -106,7 +96,7 @@ public class DetailActivity extends AppCompatActivity {
             final String id = extras.getString("EXTRA_ID");
             Trailer(id);
 
-            if( date.length()!=0 || overview.length()!=0) {
+            if (date.length() != 0 || overview.length() != 0) {
 
                 String year = date.split("-")[0];
 
@@ -121,7 +111,7 @@ public class DetailActivity extends AppCompatActivity {
                 ((TextView) rootView.findViewById(R.id.detail_vote))
                         .setText(vote);
             }
-            ImageView imageView = (ImageView)rootView.findViewById(R.id.detail_image);
+            ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_image);
             Picasso.with(getContext()).load(image).placeholder(R.drawable.loading).fit().into(imageView);
 
             trailer = (TextView) rootView.findViewById(R.id.detail_trailer);
@@ -129,12 +119,11 @@ public class DetailActivity extends AppCompatActivity {
             trailer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(key.size() != 0) {
+                    if (key.size() != 0) {
                         String str = key.get(0);
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + str)));
-                    }
-                    else{
-                        Toast.makeText(getContext(),"There is no trailer for this movie!",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "There is no trailer for this movie!", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -151,7 +140,7 @@ public class DetailActivity extends AppCompatActivity {
             ShareActionProvider mShareActionProvider =
                     (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
-            if (mShareActionProvider != null ) {
+            if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
             } else {
             }
@@ -162,14 +151,14 @@ public class DetailActivity extends AppCompatActivity {
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT,
-                   title + "#PopularMovies");
+                    title + "#PopularMovies");
             return shareIntent;
         }
 
-        private void Trailer(final String idstr){
+        private void Trailer(final String idstr) {
             try {
                 key = new ArrayList<String>();
-                final String BASE_URL = "http://api.themoviedb.org/3/movie/"+idstr+"/videos?";
+                final String BASE_URL = "http://api.themoviedb.org/3/movie/" + idstr + "/videos?";
                 final String API_KEY_URL = "api_key=";
                 final String API_KEY = "78152e1f5dc1e0ca19063a06ea342fae";
 
@@ -196,7 +185,7 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error instanceof NoConnectionError) {
-                            Toast.makeText(getContext(),"No internet connections!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No internet connections!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }) {

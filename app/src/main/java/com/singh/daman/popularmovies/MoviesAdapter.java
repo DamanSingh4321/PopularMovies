@@ -19,8 +19,8 @@ public class MoviesAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<String> moviesposter, overview, date, title, vote;
 
-    public MoviesAdapter(Context c,ArrayList<String> moviesposter, ArrayList<String> overview,
-                         ArrayList<String>  date,ArrayList<String> title,ArrayList<String> vote ) {
+    public MoviesAdapter(Context c, ArrayList<String> moviesposter, ArrayList<String> overview,
+                         ArrayList<String> date, ArrayList<String> title, ArrayList<String> vote) {
         mContext = c;
         this.moviesposter = moviesposter;
         this.overview = overview;
@@ -31,27 +31,31 @@ public class MoviesAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return moviesposter.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return 0;
+    }
+
+    public static class ViewHolder {
+        public final ImageView imageView;
+
+        public ViewHolder(View view){
+            imageView = (ImageView) view.findViewById(R.id.grid_image);
+        }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
+      
         View grid;
-        ImageView imageView;
         LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -63,9 +67,8 @@ public class MoviesAdapter extends BaseAdapter {
         } else {
             grid = (View) convertView;
         }
-
-        imageView = (ImageView)grid.findViewById(R.id.grid_image);
-        Picasso.with(mContext).load(moviesposter.get(position)).placeholder(R.drawable.loading).fit().into(imageView);
+        ViewHolder holder = new ViewHolder(grid);
+        Picasso.with(mContext).load(moviesposter.get(position)).placeholder(R.drawable.loading).fit().into(holder.imageView);
 
         return grid;
     }

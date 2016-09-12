@@ -43,6 +43,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +62,6 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
     }
 
@@ -71,9 +72,6 @@ public class MoviesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             Data();
@@ -86,8 +84,6 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // The ArrayAdapter will take data from a source and
-        // use it to populate the ListView it's attached to.
         moviesposter = new ArrayList<String>();
         overview = new ArrayList<String>();
         date = new ArrayList<String>();
@@ -97,14 +93,13 @@ public class MoviesFragment extends Fragment {
 
         mMoviesAdapter = new MoviesAdapter(getActivity(), moviesposter, overview, date, title, vote);
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-        // Get a reference to the ListView, and attach this adapter to it.
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
         gridview.setAdapter(mMoviesAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
                 Bundle extras = new Bundle();
                 extras.putString("EXTRA_IMAGE", moviesposter.get(i));
                 extras.putString("EXTRA_OVERVIEW", overview.get(i));
@@ -128,17 +123,17 @@ public class MoviesFragment extends Fragment {
 
     public void Data() {
         try {
-            final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
+            final String BASE_URL = "https://api.themoviedb.org/3/movie/";
             final String API_KEY_URL = "api_key=";
             final String API_KEY = "78152e1f5dc1e0ca19063a06ea342fae";
             final String IMAGE_URL = "http://image.tmdb.org/t/p/w500";
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sort = prefs.getString(getString(R.string.pref_sort_key),
                     getString(R.string.pref_sort_popularity));
-            String order = prefs.getString(getString(R.string.pref_order_key),
+            final String order = prefs.getString(getString(R.string.pref_order_key),
                     getString(R.string.pref_order_asc));
 
-            String url = BASE_URL + API_KEY_URL + API_KEY + "&sort_by=" + sort + order;
+            String url = BASE_URL + sort + "?" + API_KEY_URL + API_KEY;
             StringRequest stringRequest = new StringRequest(Request.Method.GET,
                     url,
                     new Response.Listener<String>() {
@@ -151,7 +146,7 @@ public class MoviesFragment extends Fragment {
                                 JSONArray a1obj = new JSONArray(syncresponse);
                                 for (int j = 0; j < a1obj.length(); j++) {
                                     JSONObject obj = a1obj.getJSONObject(j);
-                                    String image = IMAGE_URL+obj.getString("poster_path");
+                                    String image = IMAGE_URL + obj.getString("poster_path");
                                     moviesposter.add(image);
                                     overview.add(obj.getString("overview"));
                                     title.add(obj.getString("title"));
@@ -162,13 +157,21 @@ public class MoviesFragment extends Fragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                            if (order.equals("asc")) {
+                                Collections.reverse(moviesposter);
+                                Collections.reverse(overview);
+                                Collections.reverse(title);
+                                Collections.reverse(vote);
+                                Collections.reverse(date);
+                                Collections.reverse(id);
+                            }
                             mMoviesAdapter.notifyDataSetChanged();
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if (error instanceof NoConnectionError) {
-                        Toast.makeText(getContext(),"No internet connections!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "No internet connections!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }) {
