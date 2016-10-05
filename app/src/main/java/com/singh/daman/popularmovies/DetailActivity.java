@@ -2,22 +2,18 @@ package com.singh.daman.popularmovies;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +89,8 @@ public class DetailActivity extends AppCompatActivity {
             String date = extras.getString("EXTRA_DATE");
             title = extras.getString("EXTRA_TITLE");
             String vote = extras.getString("EXTRA_VOTE") + "/10";
-            final String id = extras.getString("EXTRA_ID");
+            String id = extras.getString("EXTRA_ID");
+            System.out.println(id);
             Trailer(id);
 
             if (date.length() != 0 || overview.length() != 0) {
@@ -121,6 +118,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     if (key.size() != 0) {
                         String str = key.get(0);
+                        System.out.println("str: " +str);
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + str)));
                     } else {
                         Toast.makeText(getContext(), "There is no trailer for this movie!", Toast.LENGTH_LONG).show();
@@ -177,6 +175,7 @@ public class DetailActivity extends AppCompatActivity {
                                         JSONObject obj = a1obj.getJSONObject(j);
                                         key.add(obj.getString("key"));
                                     }
+                                    System.out.println(key);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
